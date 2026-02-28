@@ -56,20 +56,7 @@ export default function Hero({ onNav }) {
           transition: "all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
         }}
       >
-        <div
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: 12,
-            letterSpacing: 5,
-            textTransform: "uppercase",
-            color: C.gold,
-            marginBottom: 24,
-            opacity: loaded ? 1 : 0,
-            transition: "opacity 1.5s ease 0.3s",
-          }}
-        >
-          Suffolk&apos;s hidden gem.
-        </div>
+      
 
         <h1
           style={{
