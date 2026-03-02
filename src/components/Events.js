@@ -7,19 +7,19 @@ const EVENTS = [
   {
     title: "Season Open Day",
     date: "Sunday 19th April 2026",
-    time: "10:00am onwards",
+    time: "2:00pm onwards",
     desc: "Come along and try your hand at bowls! Equipment provided, all ages welcome. Refreshments served on the green.",
     image: "/images/open.jpg",
     tag: "Open Green",
   },
-  {
-    title: "Friday School Sessions",
-    date: "Every Friday (Term Time)",
-    time: "Afternoon",
-    desc: "Children from Easton Primary School enjoy bowls every Friday afternoon. A wonderful introduction to the sport for young players.",
-    image: "/images/children.jpg",
-    tag: "Weekly",
-  },
+  // {
+  //   title: "Friday School Sessions",
+  //   date: "Every Friday (Term Time)",
+  //   time: "Afternoon",
+  //   desc: "Children from Easton Primary School enjoy bowls every Friday afternoon. A wonderful introduction to the sport for young players.",
+  //   image: "/images/children.jpg",
+  //   tag: "Weekly",
+  // },
   {
     title: "Eric Peck Open",
     date: "Sunday 10th May 2026",

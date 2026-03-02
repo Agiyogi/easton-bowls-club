@@ -66,10 +66,8 @@ export default function About() {
               marginBottom: 16,
             }}
           >
-            We welcome players of every age and ability. Some of the best
-            players in the country are young, and children from Easton Primary
-            School play every Friday afternoon during term time — they
-            thoroughly enjoy themselves.
+            We welcome players of every age and ability. There is plenty of opportunity for
+            young people to get involved and enjoy themselves at the weekends.
           </p>
           <p
             style={{
