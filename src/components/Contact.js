@@ -191,7 +191,7 @@ export default function Contact() {
                 <circle cx="12" cy="9" r="2.5" />
               </svg>
               <span>
-                Easton Bowls Club, School Lane, Easton, Suffolk IP13 0ED
+                Easton Bowls Club, Cemetery Lane, Easton, Suffolk IP13 0ED
               </span>
             </div>
           </div>
@@ -225,9 +225,8 @@ export default function Contact() {
               }}
             >
               We&rsquo;re located on the plateau above the village, just off
-              School Lane next to the cricket ground. Look for the sign to the
-              Cemetery &amp; Bowls Club. Three miles south of Framlingham on the
-              B1078.
+              Cemetery Lane next to the cricket ground. Look for the sign to the
+            Easton Bowls Club. 
             </p>
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4893.099109562193!2d1.33553164863528!3d52.178882766810936!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47d99b514cc4ab71%3A0x1afc31d802ae70a0!2sEaston%20Bowls%20Club!5e0!3m2!1sen!2suk!4v1772291420929!5m2!1sen!2suk"

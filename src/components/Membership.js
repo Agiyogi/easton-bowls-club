@@ -38,8 +38,6 @@ const TIERS = [
     highlight: false,
     features: [
       "Under 18s welcome",
-      "Coaching included",
-      "Equipment provided",
       "Match fees: £2 per game",
     ],
   },
@@ -51,7 +49,7 @@ export default function Membership() {
       <SectionTitle
         label="Join Us"
         title="Membership"
-        subtitle="Affordable rates for the whole family. No green fees — just one simple annual subscription."
+        subtitle="Affordable rates for the whole family: One simple annual subscription."
       />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }} className="membership-grid">
         {TIERS.map((t, i) => (
