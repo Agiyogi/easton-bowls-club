@@ -82,7 +82,66 @@ export default function Contact() {
               Get in Touch
             </h3>
 
-            {/* Contact name */}
+            {/* Chairman — Mandy Plank */}
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                alignItems: "center",
+                marginBottom: 14,
+                fontFamily: "'DM Sans'",
+                fontSize: 15,
+                color: C.charcoal,
+              }}
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={C.sageDeep}
+                strokeWidth="1.5"
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 4-7 8-7s8 3 8 7" />
+              </svg>
+              <span>
+                <strong>Mandy Plank</strong>{" "}
+                <span style={{ fontSize: 13, color: C.warmGray }}>— Chair</span>
+              </span>
+            </div>
+
+            {/* Mandy phone */}
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                alignItems: "center",
+                marginBottom: 20,
+                fontFamily: "'DM Sans'",
+                fontSize: 15,
+                color: C.charcoal,
+              }}
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={C.sageDeep}
+                strokeWidth="1.5"
+              >
+                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.81.36 1.6.68 2.34a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.74.32 1.53.55 2.34.68A2 2 0 0122 16.92z" />
+              </svg>
+              <a
+                href="tel:07949898784"
+                style={{ color: C.charcoal, textDecoration: "none" }}
+              >
+                07949 898784
+              </a>
+            </div>
+
+            {/* Mike Cattermole */}
             <div
               style={{
                 display: "flex",
@@ -108,7 +167,7 @@ export default function Contact() {
               <span>Mike Cattermole</span>
             </div>
 
-            {/* Phone */}
+            {/* Mike phone */}
             <div
               style={{
                 display: "flex",
@@ -226,7 +285,7 @@ export default function Contact() {
             >
               We&rsquo;re located on the plateau above the village, just off
               Cemetery Lane next to the cricket ground. Look for the sign to the
-            Easton Bowls Club. 
+              Easton Bowls Club.
             </p>
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4893.099109562193!2d1.33553164863528!3d52.178882766810936!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47d99b514cc4ab71%3A0x1afc31d802ae70a0!2sEaston%20Bowls%20Club!5e0!3m2!1sen!2suk!4v1772291420929!5m2!1sen!2suk"
