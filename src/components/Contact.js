@@ -88,7 +88,7 @@ export default function Contact() {
                 display: "flex",
                 gap: 12,
                 alignItems: "center",
-                marginBottom: 14,
+                marginBottom: 20,
                 fontFamily: "'DM Sans'",
                 fontSize: 15,
                 color: C.charcoal,
@@ -109,36 +109,6 @@ export default function Contact() {
                 <strong>Mandy Plank</strong>{" "}
                 <span style={{ fontSize: 13, color: C.warmGray }}>— Chair</span>
               </span>
-            </div>
-
-            {/* Mandy phone */}
-            <div
-              style={{
-                display: "flex",
-                gap: 12,
-                alignItems: "center",
-                marginBottom: 20,
-                fontFamily: "'DM Sans'",
-                fontSize: 15,
-                color: C.charcoal,
-              }}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke={C.sageDeep}
-                strokeWidth="1.5"
-              >
-                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.81.36 1.6.68 2.34a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.74.32 1.53.55 2.34.68A2 2 0 0122 16.92z" />
-              </svg>
-              <a
-                href="tel:07949898784"
-                style={{ color: C.charcoal, textDecoration: "none" }}
-              >
-                07949 898784
-              </a>
             </div>
 
             {/* Mike Cattermole */}
