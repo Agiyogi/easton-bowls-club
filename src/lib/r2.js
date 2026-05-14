@@ -98,26 +98,69 @@ function manifestKey(gallery) {
   return `${gallery}/manifest.json`;
 }
 
-async function streamToString(stream) {
+async function bodyToString(body) {
+  if (!body) return "";
+  // AWS SDK v3 attaches transformToString to the response stream — use it
+  // rather than hand-rolling a Node Readable iterator, which silently returns
+  // "" when the body is a web ReadableStream (Vercel edge / some runtimes).
+  if (typeof body.transformToString === "function") {
+    return body.transformToString("utf-8");
+  }
+  if (typeof body.text === "function") {
+    return body.text();
+  }
   const chunks = [];
-  for await (const chunk of stream) {
+  for await (const chunk of body) {
     chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
   }
   return Buffer.concat(chunks).toString("utf-8");
 }
 
 export async function readManifest(gallery) {
+  const key = manifestKey(gallery);
   try {
     const res = await r2().send(
-      new GetObjectCommand({ Bucket: BUCKET, Key: manifestKey(gallery) })
+      new GetObjectCommand({ Bucket: BUCKET, Key: key })
     );
-    const text = await streamToString(res.Body);
-    const data = JSON.parse(text);
-    return Array.isArray(data) ? data : [];
-  } catch (err) {
-    if (err?.$metadata?.httpStatusCode === 404 || err?.name === "NoSuchKey") {
+    const text = await bodyToString(res.Body);
+    if (!text) {
+      console.error(
+        `readManifest: empty body for bucket=${BUCKET} key=${key}`
+      );
       return [];
     }
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (parseErr) {
+      console.error(
+        `readManifest: JSON parse failed for bucket=${BUCKET} key=${key}`,
+        { textPreview: text.slice(0, 200), parseErr: parseErr.message }
+      );
+      return [];
+    }
+    if (!Array.isArray(data)) {
+      console.error(
+        `readManifest: manifest is not an array for bucket=${BUCKET} key=${key}`,
+        { type: typeof data }
+      );
+      return [];
+    }
+    return data;
+  } catch (err) {
+    const status = err?.$metadata?.httpStatusCode;
+    const name = err?.name;
+    if (status === 404 || name === "NoSuchKey") {
+      console.warn(
+        `readManifest: manifest not found bucket=${BUCKET} key=${key} (404). ` +
+          `Verify R2_BUCKET env var matches the bucket where uploads land.`
+      );
+      return [];
+    }
+    console.error(
+      `readManifest: failed bucket=${BUCKET} key=${key}`,
+      { name, status, message: err?.message }
+    );
     throw err;
   }
 }

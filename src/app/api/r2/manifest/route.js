@@ -23,12 +23,19 @@ export async function GET(req) {
   }
   try {
     const entries = await readManifest(gallery);
+    console.log(
+      `[manifest GET] gallery=${gallery} bucket=${process.env.R2_BUCKET} ` +
+        `entries=${entries.length}`
+    );
     return NextResponse.json(
       { entries },
       { headers: { "Cache-Control": "no-store" } }
     );
   } catch (err) {
-    console.error("manifest GET error", err);
+    console.error(
+      `[manifest GET] gallery=${gallery} bucket=${process.env.R2_BUCKET} failed`,
+      { name: err?.name, status: err?.$metadata?.httpStatusCode, message: err?.message }
+    );
     return NextResponse.json({ error: "read failed" }, { status: 500 });
   }
 }
