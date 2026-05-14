@@ -8,6 +8,8 @@ import GalleryTeaser from "../components/GalleryTeaser";
 import ScoresTeaser from "../components/ScoresTeaser";
 import Contact from "../components/Contact";
 
+export const revalidate = 60;
+
 export default function Home() {
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: C.cream, minHeight: "100vh" }}>

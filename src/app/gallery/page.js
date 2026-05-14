@@ -3,7 +3,7 @@ import { COLORS as C } from "@/data/constants";
 import InnerHeader from "@/components/InnerHeader";
 import GalleryGrid from "@/components/GalleryGrid";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata = {
   title: "Gallery | Easton Bowls Club",

@@ -14,7 +14,7 @@ export default function ScoresTeaser() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/r2/manifest?gallery=scores")
+    fetch("/api/r2/manifest?gallery=scores", { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         if (cancelled) return;

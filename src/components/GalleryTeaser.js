@@ -14,7 +14,7 @@ export default function GalleryTeaser() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/r2/manifest?gallery=photos")
+    fetch("/api/r2/manifest?gallery=photos", { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         if (cancelled) return;

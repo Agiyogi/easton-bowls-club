@@ -190,8 +190,8 @@ function AdminContent() {
     setLoading(true);
     try {
       const [p, s] = await Promise.all([
-        fetch("/api/r2/manifest?gallery=photos").then((r) => r.json()),
-        fetch("/api/r2/manifest?gallery=scores").then((r) => r.json()),
+        fetch("/api/r2/manifest?gallery=photos", { cache: "no-store" }).then((r) => r.json()),
+        fetch("/api/r2/manifest?gallery=scores", { cache: "no-store" }).then((r) => r.json()),
       ]);
       setPhotos(p.entries || []);
       setScores(s.entries || []);
