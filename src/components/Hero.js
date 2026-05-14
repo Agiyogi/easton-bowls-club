@@ -3,11 +3,19 @@
 import { useState, useEffect } from "react";
 import { COLORS as C } from "../data/constants";
 
-export default function Hero({ onNav }) {
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
+  window.scrollTo({ top, behavior: "smooth" });
+}
+
+export default function Hero() {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     setTimeout(() => setLoaded(true), 100);
   }, []);
+  const onNav = scrollTo;
 
   return (
     <section

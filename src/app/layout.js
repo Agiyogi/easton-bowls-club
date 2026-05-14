@@ -1,5 +1,7 @@
 import { Libre_Baskerville, DM_Sans } from "next/font/google";
 import "./globals.css";
+import Nav from "../components/Nav";
+import Footer from "../components/Footer";
 
 const libreBaskerville = Libre_Baskerville({
   subsets: ["latin"],
@@ -25,7 +27,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${libreBaskerville.variable} ${dmSans.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Nav />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
