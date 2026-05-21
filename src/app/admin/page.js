@@ -12,10 +12,52 @@ const TABS = [
   { id: "manage", label: "Manage" },
 ];
 
+function todayISO() {
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 10);
+}
+
+function monthLabel(iso) {
+  if (!iso) return "";
+  const [y, m] = iso.slice(0, 7).split("-").map(Number);
+  if (!y || !m) return "";
+  return new Date(y, m - 1, 1).toLocaleDateString("en-GB", {
+    month: "long",
+    year: "numeric",
+  });
+}
+
 function ManageList({ gallery, entries, onChange }) {
   const [editing, setEditing] = useState(null);
   const [draft, setDraft] = useState("");
+  const [editingDate, setEditingDate] = useState(null);
+  const [dateDraft, setDateDraft] = useState("");
   const [busy, setBusy] = useState(null);
+
+  const saveDate = async (entry) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateDraft)) return;
+    setBusy(entry.key);
+    try {
+      const res = await fetch(`/api/r2/manifest?gallery=${gallery}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Password": getAdminPassword(),
+        },
+        body: JSON.stringify({ key: entry.key, takenAt: dateDraft }),
+      });
+      if (res.ok) {
+        onChange(
+          entries.map((e) => (e.key === entry.key ? { ...e, takenAt: dateDraft } : e))
+        );
+        setEditingDate(null);
+      }
+    } finally {
+      setBusy(null);
+    }
+  };
 
   const saveCaption = async (entry) => {
     setBusy(entry.key);
@@ -136,6 +178,83 @@ function ManageList({ gallery, entries, onChange }) {
                 {entry.caption || <em style={{ color: C.sage }}>no caption</em>}
               </div>
             )}
+            {gallery === "photos" &&
+              (editingDate === entry.key ? (
+                <div style={{ display: "flex", gap: 6, marginTop: 6, alignItems: "center" }}>
+                  <input
+                    type="date"
+                    value={dateDraft}
+                    max={todayISO()}
+                    onChange={(e) => setDateDraft(e.target.value)}
+                    style={{
+                      padding: "6px 10px",
+                      borderRadius: 6,
+                      border: `1px solid ${C.sage}`,
+                      fontFamily: "'DM Sans', sans-serif",
+                      fontSize: 13,
+                    }}
+                  />
+                  <button
+                    onClick={() => saveDate(entry)}
+                    disabled={busy === entry.key}
+                    style={{
+                      background: C.sageDeep,
+                      color: C.cream,
+                      border: "none",
+                      borderRadius: 6,
+                      padding: "6px 12px",
+                      fontSize: 12,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setEditingDate(null)}
+                    style={{
+                      background: "none",
+                      border: `1px solid ${C.sage}`,
+                      borderRadius: 6,
+                      padding: "6px 12px",
+                      fontSize: 12,
+                      cursor: "pointer",
+                      color: C.warmGray,
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <div style={{ fontSize: 12, color: C.warmGray, marginTop: 6, display: "flex", gap: 8, alignItems: "center" }}>
+                  <span>
+                    {entry.takenAt ? (
+                      <>
+                        {monthLabel(entry.takenAt)}{" "}
+                        <span style={{ opacity: 0.6 }}>· {entry.takenAt}</span>
+                      </>
+                    ) : (
+                      <em style={{ color: C.sage }}>no date</em>
+                    )}
+                  </span>
+                  <button
+                    onClick={() => {
+                      setEditingDate(entry.key);
+                      setDateDraft(entry.takenAt || todayISO());
+                    }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      padding: 0,
+                      fontSize: 12,
+                      cursor: "pointer",
+                      color: C.sageDeep,
+                      textDecoration: "underline",
+                    }}
+                  >
+                    Edit date
+                  </button>
+                </div>
+              ))}
             <div style={{ fontSize: 11, color: C.warmGray, opacity: 0.7, marginTop: 4 }}>
               {entry.key}
             </div>

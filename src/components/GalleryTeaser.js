@@ -7,6 +7,17 @@ import { COLORS as C } from "../data/constants";
 import { Section, SectionTitle } from "./Shared";
 import Lightbox from "./Lightbox";
 
+function monthLabel(item) {
+  const iso = item.takenAt || (item.uploadedAt ? item.uploadedAt.slice(0, 10) : "");
+  if (!iso) return "";
+  const [y, m] = iso.slice(0, 7).split("-").map(Number);
+  if (!y || !m) return "";
+  return new Date(y, m - 1, 1).toLocaleDateString("en-GB", {
+    month: "long",
+    year: "numeric",
+  });
+}
+
 export default function GalleryTeaser() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +29,12 @@ export default function GalleryTeaser() {
       .then((r) => r.json())
       .then((data) => {
         if (cancelled) return;
-        setItems((data.entries || []).slice(0, 6));
+        const all = [...(data.entries || [])].sort((a, b) => {
+          const da = a.takenAt || a.uploadedAt || "";
+          const db = b.takenAt || b.uploadedAt || "";
+          return db.localeCompare(da);
+        });
+        setItems(all.slice(0, 6));
       })
       .catch(() => {})
       .finally(() => !cancelled && setLoading(false));
@@ -55,30 +71,46 @@ export default function GalleryTeaser() {
       ) : (
         <div className="teaser-grid">
           {items.map((item, i) => (
-            <button
-              key={item.key}
-              onClick={() => setOpen(i)}
-              style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                cursor: "pointer",
-                borderRadius: 10,
-                overflow: "hidden",
-                boxShadow: "0 2px 14px rgba(0,0,0,0.06)",
-                position: "relative",
-                aspectRatio: "4 / 3",
-              }}
-              className="teaser-tile"
-            >
-              <Image
-                src={item.url}
-                alt={item.caption || "Easton Bowls Club photo"}
-                fill
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                style={{ objectFit: "cover", background: C.sage }}
-              />
-            </button>
+            <div key={item.key}>
+              <button
+                onClick={() => setOpen(i)}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  borderRadius: 10,
+                  overflow: "hidden",
+                  boxShadow: "0 2px 14px rgba(0,0,0,0.06)",
+                  position: "relative",
+                  aspectRatio: "4 / 3",
+                }}
+                className="teaser-tile"
+              >
+                <Image
+                  src={item.url}
+                  alt={item.caption || "Easton Bowls Club photo"}
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                  style={{ objectFit: "cover", background: C.sage }}
+                />
+              </button>
+              {monthLabel(item) && (
+                <div
+                  style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: 11,
+                    color: C.warmGray,
+                    textAlign: "center",
+                    marginTop: 6,
+                  }}
+                >
+                  {monthLabel(item)}
+                </div>
+              )}
+            </div>
           ))}
         </div>
       )}

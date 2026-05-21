@@ -12,7 +12,15 @@ const COMPRESS_OPTS = {
   fileType: "image/jpeg",
 };
 
-async function uploadOne({ file, gallery, caption, scoreFields }) {
+// Local (not UTC) calendar date as YYYY-MM-DD, for the date picker default.
+function todayISO() {
+  const d = new Date();
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 10);
+}
+
+async function uploadOne({ file, gallery, caption, takenAt, scoreFields }) {
   const password = getAdminPassword();
   const compressed = await imageCompression(file, COMPRESS_OPTS);
   const contentType = compressed.type || "image/jpeg";
@@ -47,6 +55,7 @@ async function uploadOne({ file, gallery, caption, scoreFields }) {
     key,
     url: publicUrl,
     caption: caption || "",
+    ...(gallery === "photos" ? { takenAt } : {}),
     ...(gallery === "scores" ? scoreFields : {}),
   };
 
@@ -86,8 +95,10 @@ const labelStyle = {
 };
 
 export default function UploadForm({ gallery, onUploaded }) {
+  const isScores = gallery === "scores";
   const fileRef = useRef(null);
   const [caption, setCaption] = useState("");
+  const [takenAt, setTakenAt] = useState(todayISO());
   const [date, setDate] = useState("");
   const [opponent, setOpponent] = useState("");
   const [homeAway, setHomeAway] = useState("home");
@@ -99,6 +110,7 @@ export default function UploadForm({ gallery, onUploaded }) {
   const reset = () => {
     if (fileRef.current) fileRef.current.value = "";
     setCaption("");
+    setTakenAt(todayISO());
     setDate("");
     setOpponent("");
     setHomeAway("home");
@@ -111,6 +123,10 @@ export default function UploadForm({ gallery, onUploaded }) {
     const files = fileRef.current?.files;
     if (!files || files.length === 0) {
       setError("Pick at least one file");
+      return;
+    }
+    if (!isScores && !takenAt) {
+      setError("Pick the date the photo was taken");
       return;
     }
     setBusy(true);
@@ -128,6 +144,7 @@ export default function UploadForm({ gallery, onUploaded }) {
           file,
           gallery,
           caption: files.length === 1 ? caption : caption ? `${caption} (${i + 1})` : "",
+          takenAt,
           scoreFields,
         });
         if (onUploaded) onUploaded(saved);
@@ -141,8 +158,6 @@ export default function UploadForm({ gallery, onUploaded }) {
       setBusy(false);
     }
   };
-
-  const isScores = gallery === "scores";
 
   return (
     <form
@@ -172,6 +187,23 @@ export default function UploadForm({ gallery, onUploaded }) {
             : "Pick multiple photos to upload in one batch. Images are compressed to ~200 KB."}
         </div>
       </div>
+
+      {!isScores && (
+        <div>
+          <label style={labelStyle}>Date taken</label>
+          <input
+            type="date"
+            value={takenAt}
+            max={todayISO()}
+            onChange={(e) => setTakenAt(e.target.value)}
+            style={inputStyle}
+            required
+          />
+          <div style={{ fontSize: 11, color: C.warmGray, marginTop: 6 }}>
+            Used to group the gallery by month. Applies to every photo in this batch.
+          </div>
+        </div>
+      )}
 
       {isScores && (
         <>

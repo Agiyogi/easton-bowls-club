@@ -5,6 +5,7 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   DeleteObjectCommand,
+  ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -179,6 +180,64 @@ export async function writeManifest(gallery, entries) {
 
 export async function deleteObject(key) {
   await r2().send(new DeleteObjectCommand({ Bucket: BUCKET, Key: key }));
+}
+
+function toISODate(value) {
+  return new Date(value).toISOString().slice(0, 10);
+}
+
+// Map of key -> LastModified (Date) for every object under `prefix`.
+export async function listLastModified(prefix) {
+  const map = new Map();
+  let ContinuationToken;
+  do {
+    const res = await r2().send(
+      new ListObjectsV2Command({ Bucket: BUCKET, Prefix: prefix, ContinuationToken })
+    );
+    for (const obj of res.Contents || []) {
+      if (obj.Key && obj.LastModified) map.set(obj.Key, obj.LastModified);
+    }
+    ContinuationToken = res.IsTruncated ? res.NextContinuationToken : undefined;
+  } while (ContinuationToken);
+  return map;
+}
+
+// Reads the photos manifest, ensuring every entry has a `takenAt` (YYYY-MM-DD).
+// Entries missing one are backfilled from the R2 object's LastModified (via
+// ListObjectsV2), falling back to the entry's uploadedAt, then today. The
+// backfill is persisted to the manifest so the list+write happens only once.
+export async function readPhotosWithDates() {
+  const entries = await readManifest("photos");
+  if (entries.length === 0 || entries.every((e) => e.takenAt)) return entries;
+
+  let lastModified = new Map();
+  try {
+    lastModified = await listLastModified("photos/");
+  } catch (err) {
+    console.error("readPhotosWithDates: ListObjectsV2 failed", err);
+  }
+
+  let changed = false;
+  const next = entries.map((e) => {
+    if (e.takenAt) return e;
+    changed = true;
+    const lm = lastModified.get(e.key);
+    const iso = lm
+      ? toISODate(lm)
+      : e.uploadedAt
+        ? toISODate(e.uploadedAt)
+        : toISODate(new Date());
+    return { ...e, takenAt: iso };
+  });
+
+  if (changed) {
+    try {
+      await writeManifest("photos", next);
+    } catch (err) {
+      console.error("readPhotosWithDates: backfill write failed", err);
+    }
+  }
+  return next;
 }
 
 export function verifyAdmin(req) {

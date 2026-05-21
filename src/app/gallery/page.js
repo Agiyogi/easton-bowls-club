@@ -1,4 +1,4 @@
-import { readManifest } from "@/lib/r2";
+import { readPhotosWithDates } from "@/lib/r2";
 import { COLORS as C } from "@/data/constants";
 import InnerHeader from "@/components/InnerHeader";
 import GalleryGrid from "@/components/GalleryGrid";
@@ -13,7 +13,7 @@ export const metadata = {
 export default async function GalleryPage() {
   let entries = [];
   try {
-    entries = await readManifest("photos");
+    entries = await readPhotosWithDates();
   } catch (err) {
     console.error("gallery: manifest read failed", err);
   }

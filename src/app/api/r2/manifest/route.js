@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   readManifest,
+  readPhotosWithDates,
   writeManifest,
   deleteObject,
   verifyAdmin,
@@ -22,7 +23,8 @@ export async function GET(req) {
     return NextResponse.json({ error: "invalid gallery" }, { status: 400 });
   }
   try {
-    const entries = await readManifest(gallery);
+    const entries =
+      gallery === "photos" ? await readPhotosWithDates() : await readManifest(gallery);
     console.log(
       `[manifest GET] gallery=${gallery} bucket=${process.env.R2_BUCKET} ` +
         `entries=${entries.length}`
@@ -70,6 +72,17 @@ export async function POST(req) {
     uploadedAt: new Date().toISOString(),
   };
 
+  if (gallery === "photos") {
+    const takenAt = entry.takenAt ? String(entry.takenAt).slice(0, 10) : "";
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(takenAt)) {
+      return NextResponse.json(
+        { error: "takenAt (YYYY-MM-DD) is required for photos" },
+        { status: 400 }
+      );
+    }
+    clean.takenAt = takenAt;
+  }
+
   if (gallery === "scores") {
     clean.date = entry.date ? String(entry.date) : "";
     clean.opponent = entry.opponent ? String(entry.opponent).slice(0, 120) : "";
@@ -116,6 +129,11 @@ export async function PATCH(req) {
       const updated = { ...e };
       if (typeof body.caption === "string") {
         updated.caption = body.caption.slice(0, 240);
+      }
+      if (gallery === "photos") {
+        if (typeof body.takenAt === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.takenAt)) {
+          updated.takenAt = body.takenAt;
+        }
       }
       if (gallery === "scores") {
         if (typeof body.date === "string") updated.date = body.date;
