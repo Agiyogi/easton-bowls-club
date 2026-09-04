@@ -1,7 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { COLORS as C } from "../data/constants";
+
+const HERO_VIDEO = "/videos/fynn-winners.mp4";
+const HERO_POSTER = "/images/fynn-winners-poster.jpg";
+const HERO_FALLBACK = "/images/hero.jpg";
 
 function scrollTo(id) {
   const el = document.getElementById(id);
@@ -17,6 +21,34 @@ export default function Hero() {
   }, []);
   const onNav = scrollTo;
 
+  // Video background: falls back to the poster if autoplay is blocked,
+  // and to the original hero.jpg if the video fails to load at all.
+  const videoRef = useRef(null);
+  const [videoFailed, setVideoFailed] = useState(false);
+  const [autoplayBlocked, setAutoplayBlocked] = useState(false);
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true; // React doesn't always emit the muted attribute in SSR HTML
+    const p = v.play();
+    if (p && typeof p.catch === "function") {
+      p.catch((err) => {
+        // NotAllowedError = autoplay policy; anything else means the file didn't load.
+        if (err && err.name === "NotAllowedError") setAutoplayBlocked(true);
+        else setVideoFailed(true);
+      });
+    }
+  }, [videoFailed]);
+
+  const bgStyle = {
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    zIndex: 0,
+  };
+
   return (
     <section
       style={{
@@ -28,19 +60,31 @@ export default function Hero() {
         overflow: "hidden",
       }}
     >
-      {/* Background image */}
-      <img
-        src="/images/hero.jpg"
-        alt="Easton Bowls Club green"
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          zIndex: 0,
-        }}
-      />
+      {/* Background: hero.jpg always underneath, video (or its poster) on top */}
+      <img src={HERO_FALLBACK} alt="Easton Bowls Club green" style={bgStyle} />
+      {!videoFailed && autoplayBlocked && (
+        <img
+          src={HERO_POSTER}
+          alt="Fynn League winners 2026 — Easton A"
+          onError={() => setVideoFailed(true)}
+          style={bgStyle}
+        />
+      )}
+      {!videoFailed && !autoplayBlocked && (
+        <video
+          ref={videoRef}
+          src={HERO_VIDEO}
+          poster={HERO_POSTER}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-label="Fireworks over the green — Fynn League winners 2026, Easton A"
+          onError={() => setVideoFailed(true)}
+          style={bgStyle}
+        />
+      )}
       {/* Dark overlay for text readability */}
       <div
         style={{

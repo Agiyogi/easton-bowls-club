@@ -1,5 +1,7 @@
 import { COLORS as C } from "../data/constants";
 import Hero from "../components/Hero";
+import NewsBanner from "../components/NewsBanner";
+import News from "../components/News";
 import About from "../components/About";
 import Fixtures from "../components/Fixtures";
 import Membership from "../components/Membership";
@@ -13,7 +15,9 @@ export const revalidate = 60;
 export default function Home() {
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: C.cream, minHeight: "100vh" }}>
+      <NewsBanner />
       <Hero />
+      <News />
       <About />
       <Fixtures />
       <Membership />
