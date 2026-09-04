@@ -2,24 +2,17 @@
 
 import { useState, useEffect, useRef } from "react";
 import { COLORS as C } from "../data/constants";
+import NewsBanner from "./NewsBanner";
 
 const HERO_VIDEO = "/videos/fynn-winners.mp4";
 const HERO_POSTER = "/images/fynn-winners-poster.jpg";
 const HERO_FALLBACK = "/images/hero.jpg";
-
-function scrollTo(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
-  window.scrollTo({ top, behavior: "smooth" });
-}
 
 export default function Hero() {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     setTimeout(() => setLoaded(true), 100);
   }, []);
-  const onNav = scrollTo;
 
   // Video background: falls back to the poster if autoplay is blocked,
   // and to the original hero.jpg if the video fails to load at all.
@@ -143,59 +136,18 @@ export default function Hero() {
             lineHeight: 1.7,
             color: "rgba(253,248,240,0.85)",
             maxWidth: 520,
-            margin: "0 auto 48px",
+            margin: "0 auto",
             fontWeight: 300,
           }}
         >
           Set in the beautiful heart of the Deben Valley, our village bowls club
           welcomes players of all ages and abilities.
         </p>
+      </div>
 
-        <div
-          style={{
-            display: "flex",
-            gap: 16,
-            justifyContent: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <button
-            onClick={() => onNav("membership")}
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 13,
-              fontWeight: 600,
-              letterSpacing: 2,
-              textTransform: "uppercase",
-              background: C.gold,
-              color: C.charcoal,
-              border: "none",
-              padding: "16px 36px",
-              borderRadius: 50,
-              cursor: "pointer",
-            }}
-          >
-            Join the Club
-          </button>
-          <button
-            onClick={() => onNav("fixtures")}
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: 13,
-              fontWeight: 500,
-              letterSpacing: 2,
-              textTransform: "uppercase",
-              background: "transparent",
-              color: C.cream,
-              border: "1px solid rgba(253,248,240,0.4)",
-              padding: "16px 36px",
-              borderRadius: 50,
-              cursor: "pointer",
-            }}
-          >
-            View Fixtures
-          </button>
-        </div>
+      {/* News banner sits low in the hero, above the scroll cue */}
+      <div style={{ position: "absolute", bottom: 104, left: 0, right: 0, zIndex: 3 }}>
+        <NewsBanner />
       </div>
 
       <div

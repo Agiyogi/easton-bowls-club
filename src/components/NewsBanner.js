@@ -1,7 +1,7 @@
 import { COLORS as C } from "../data/constants";
 import { NEWS } from "../data/news";
 
-// Slim strip that sits just under the fixed nav, over the top of the hero.
+// Slim pill linking to the news section. Positioned by its parent (the hero).
 // Driven by the banner field of the newest news item; renders nothing if unset.
 export default function NewsBanner() {
   const banner = NEWS[0]?.banner;
@@ -10,11 +10,6 @@ export default function NewsBanner() {
   return (
     <div
       style={{
-        position: "absolute",
-        top: 88,
-        left: 0,
-        right: 0,
-        zIndex: 50,
         display: "flex",
         justifyContent: "center",
         padding: "0 16px",
