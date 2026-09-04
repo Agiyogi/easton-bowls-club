@@ -9,11 +9,6 @@ const HERO_POSTER = "/images/fynn-winners-poster.jpg";
 const HERO_FALLBACK = "/images/hero.jpg";
 
 export default function Hero() {
-  const [loaded, setLoaded] = useState(false);
-  useEffect(() => {
-    setTimeout(() => setLoaded(true), 100);
-  }, []);
-
   // Video background: falls back to the poster if autoplay is blocked,
   // and to the original hero.jpg if the video fails to load at all.
   const videoRef = useRef(null);
@@ -89,61 +84,7 @@ export default function Hero() {
         }}
       />
 
-      <div
-        style={{
-          position: "relative",
-          zIndex: 2,
-          textAlign: "center",
-          padding: "0 24px",
-          maxWidth: 800,
-          opacity: loaded ? 1 : 0,
-          transform: loaded ? "translateY(0)" : "translateY(30px)",
-          transition: "all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-        }}
-      >
-      
-
-        <h1
-          style={{
-            fontFamily: "'Libre Baskerville', serif",
-            fontSize: "clamp(36px, 6vw, 72px)",
-            fontWeight: 700,
-            color: C.cream,
-            lineHeight: 1.1,
-            margin: "0 0 8px 0",
-          }}
-        >
-          Easton Bowls
-        </h1>
-        <h1
-          style={{
-            fontFamily: "'Libre Baskerville', serif",
-            fontSize: "clamp(36px, 6vw, 72px)",
-            fontWeight: 400,
-            fontStyle: "italic",
-            color: C.goldLight,
-            lineHeight: 1.1,
-            margin: "0 0 32px 0",
-          }}
-        >
-          Club
-        </h1>
-
-        <p
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: 18,
-            lineHeight: 1.7,
-            color: "rgba(253,248,240,0.85)",
-            maxWidth: 520,
-            margin: "0 auto",
-            fontWeight: 300,
-          }}
-        >
-          Set in the beautiful heart of the Deben Valley, our village bowls club
-          welcomes players of all ages and abilities.
-        </p>
-      </div>
+      {/* Hero copy removed while the Fynn League promotion runs — the nav carries the club name */}
 
       {/* News banner sits low in the hero, above the scroll cue */}
       <div style={{ position: "absolute", bottom: 104, left: 0, right: 0, zIndex: 3 }}>
