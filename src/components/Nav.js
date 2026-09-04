@@ -81,8 +81,12 @@ export default function Nav() {
     if (!isHome) return;
     const hash = window.location.hash.replace("#", "");
     if (!hash) return;
-    // Wait a tick so the section is in the DOM
-    const t = setTimeout(() => scrollToId(hash), 50);
+    // Wait a tick so the section is in the DOM, then drop the hash from the
+    // address so a reload or a copied link opens at the top of the page.
+    const t = setTimeout(() => {
+      scrollToId(hash);
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    }, 50);
     return () => clearTimeout(t);
   }, [isHome]);
 

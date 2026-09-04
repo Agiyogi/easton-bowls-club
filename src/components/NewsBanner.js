@@ -1,5 +1,18 @@
+"use client";
+
 import { COLORS as C } from "../data/constants";
 import { NEWS } from "../data/news";
+
+// Smooth-scroll to the target without writing "#news" into the address bar —
+// a hash there makes every reload (and any copied link) open at the article.
+function scrollToHash(e, href) {
+  const id = href.replace(/^#/, "");
+  const el = document.getElementById(id);
+  if (!el) return; // let the browser follow the href
+  e.preventDefault();
+  const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
+  window.scrollTo({ top, behavior: "smooth" });
+}
 
 // Slim pill linking to the news section. Positioned by its parent (the hero).
 // Driven by the banner field of the newest news item; renders nothing if unset.
@@ -18,6 +31,7 @@ export default function NewsBanner() {
     >
       <a
         href={banner.href}
+        onClick={(e) => scrollToHash(e, banner.href)}
         className="news-banner"
         style={{
           pointerEvents: "auto",
